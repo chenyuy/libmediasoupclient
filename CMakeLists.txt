@@ -17,6 +17,17 @@ configure_file (
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Find GTest
+find_package(GTest REQUIRED)
+
+# Find pthread
+find_package(Threads REQUIRED)
+
+# Find X11
+find_package(X11 REQUIRED)
+
+SET(THREADS_PREFER_PTHREAD_FLAG TRUE)
+
 # Project options.
 option(MEDIASOUPCLIENT_BUILD_TESTS "Build unit tests" ON)
 option(MEDIASOUPCLIENT_LOG_TRACE   "Enable MSC_LOG_TRACE (See Logger.hpp)" OFF)
@@ -102,12 +113,18 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"${PROJECT_SOURCE_DIR}/deps/libsdptransform/include"
 	"${LIBWEBRTC_INCLUDE_PATH}"
 	"${LIBWEBRTC_INCLUDE_PATH}/third_party/abseil-cpp"
+	${GTEST_INCLUDE_DIRS}
+	${X11_INCLUDE_DIR}
 )
 
 # Public (interface) dependencies.
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	sdptransform
 	${LIBWEBRTC_BINARY_PATH}/libwebrtc${CMAKE_STATIC_LIBRARY_SUFFIX}
+	${GTEST_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT}
+	${X11_LIBRARIES}
+	${CMAKE_DL_LIBS}
 )
 
 # Compile definitions for libwebrtc.
